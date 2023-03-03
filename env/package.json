@@ -1,0 +1,15 @@
+{
+  "name": "env",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "ncc build src/index.js --source-map --minify --license licenses.txt"
+  },
+  "author": "Chamupathi Gigara Hettige",
+  "license": "Apache-2.0",
+  "dependencies": {
+    "@actions/core": "^1.10.0",
+    "@vercel/ncc": "^0.36.1"
+  }
+}

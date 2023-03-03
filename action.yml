@@ -1,0 +1,95 @@
+// Copyright (c) 2023, Chamupathi Gigara Hettige. (https://github.com/gigara) All Rights Reserved.
+//
+// Chamupathi Gigara Hettige licenses this file to you under the Apache License,
+// Version 2.0 (the "License"); you may not use this file except
+// in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     https://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing,
+// software distributed under the License is distributed on an
+// "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+// KIND, either express or implied. See the License for the
+// specific language governing permissions and limitations
+// under the License.
+
+name: 'Cache'
+description: 'Cache Rush and pnmp'
+author: 'Chamupathi Gigara Hettige'
+branding:
+  icon: 'database'
+  color: 'blue'
+inputs:
+  pnpm:
+    description: 'pnpm version'
+    type: string
+    default: ''
+  node:
+    description: 'node version'
+    type: string
+    default: ''
+  cache-rush:
+    description: 'Cache rush directories.'
+    type: boolean
+    default: true
+  cache-rush-dir:
+    description: 'Directories to cache with rush cache key'
+    default: |
+          common/temp/install-run
+          ~/.rush    
+  cache-pnpm:
+    description: 'Cache common/temp/pnpm-store & ~/.cache/Cypress directories.'
+    type: boolean
+    default: true
+  cache-pnpm-dir:
+    description: 'Directories to cache with pnpm cache key'
+    default: |
+          common/temp/pnpm-store
+          ~/.cache/Cypress     
+  set-env:
+    description: 'Set ACTIONS_CACHE_URL & ACTIONS_RUNTIME_TOKEN envs'
+    type: boolean
+    default: false
+  rush-install:
+    description: 'run rush install command'
+    type: boolean
+    default: false
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup pnpm
+      uses: pnpm/action-setup@v2
+      if: ${{ inputs.pnpm != '' }}
+      with:
+        version: ${{ inputs.pnpm }}
+
+    - name: Setup node
+      if: ${{ inputs.node != '' }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.node }}
+
+    - name: Cache Rush
+      if: ${{ inputs.cache-rush }}
+      uses: actions/cache@v2
+      with:
+        path: ${{ inputs.cache-rush-dir }}
+        key: Rush-cache-${{ hashFiles('rush.json') }}
+
+    - name: Cache pnpm
+      if: ${{ inputs.cache-pnpm }}
+      uses: actions/cache@v3
+      with:
+        path: ${{ inputs.cache-pnpm-dir }}
+        key: pnpm-cache-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
+
+    - name: Set envs
+      if: ${{ inputs.set-env }}
+      uses: ./env
+
+    - name: Rush install
+      if: ${{ inputs.rush-install }}
+      shell: bash
+      run: node common/scripts/install-run-rush.js install        
