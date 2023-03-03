@@ -14,7 +14,7 @@
 // specific language governing permissions and limitations
 // under the License.
 
-name: 'Cache'
+name: 'Rush Cache'
 description: 'Cache Rush and pnmp'
 author: 'Chamupathi Gigara Hettige'
 branding:
