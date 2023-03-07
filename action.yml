@@ -1,79 +1,9 @@
 name: 'Rush Cache'
-description: 'Cache Rush and pnmp'
+description: 'Save rush build cache with Github actions'
 author: 'Chamupathi Gigara Hettige'
 branding:
   icon: 'database'
   color: 'blue'
-inputs:
-  pnpm:
-    description: 'pnpm version'
-    type: string
-    default: ''
-  node:
-    description: 'node version'
-    type: string
-    default: ''
-  cache-rush:
-    description: 'Cache rush directories.'
-    type: boolean
-    default: true
-  cache-rush-dir:
-    description: 'Directories to cache with rush cache key'
-    default: |
-          common/temp/install-run
-          ~/.rush    
-  cache-pnpm:
-    description: 'Cache common/temp/pnpm-store & ~/.cache/Cypress directories.'
-    type: boolean
-    default: true
-  cache-pnpm-dir:
-    description: 'Directories to cache with pnpm cache key'
-    default: |
-          common/temp/pnpm-store
-          ~/.cache/Cypress     
-  set-env:
-    description: 'Set ACTIONS_CACHE_URL & ACTIONS_RUNTIME_TOKEN envs'
-    type: boolean
-    default: false
-  rush-install:
-    description: 'run rush install command'
-    type: boolean
-    default: false
-
 runs:
-  using: "composite"
-  steps:
-    - name: Setup pnpm
-      uses: pnpm/action-setup@v2
-      if: ${{ inputs.pnpm != '' }}
-      with:
-        version: ${{ inputs.pnpm }}
-
-    - name: Setup node
-      if: ${{ inputs.node != '' }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ inputs.node }}
-
-    - name: Cache Rush
-      if: ${{ inputs.cache-rush }}
-      uses: actions/cache@v2
-      with:
-        path: ${{ inputs.cache-rush-dir }}
-        key: Rush-cache-${{ hashFiles('rush.json') }}
-
-    - name: Cache pnpm
-      if: ${{ inputs.cache-pnpm }}
-      uses: actions/cache@v3
-      with:
-        path: ${{ inputs.cache-pnpm-dir }}
-        key: pnpm-cache-${{ runner.os }}-${{ hashFiles('**/pnpm-lock.yaml') }}
-
-    - name: Set envs
-      if: ${{ inputs.set-env }}
-      uses:  gigara/rush-cache/env@v1
-
-    - name: Rush install
-      if: ${{ inputs.rush-install }}
-      shell: bash
-      run: node common/scripts/install-run-rush.js install        
+  using: 'node16'
+  main: 'dist/index.js'
