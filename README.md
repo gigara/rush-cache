@@ -5,7 +5,7 @@ This action allows [rush-github-action-build-cache-plugin](https://www.npmjs.com
 Example 1:
 ```
 - name: Set cache env
-  uses: gigara/rush-cache@v2
+  uses: gigara/rush-cache@v2.2.0
 ```
 
 Since GitHub cache access is limited to the particular branch and the base branches you should add a GitHub action as below if you need to use cache in pull requests.
@@ -22,7 +22,7 @@ jobs:
       - uses: actions/checkout@v2
 
       - name: Setup
-        uses: gigara/rush-cache@v2
+        uses: gigara/rush-cache@v2.2.0
 
       - uses: actions/setup-node@v3
         with:
